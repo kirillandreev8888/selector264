@@ -1,3 +1,14 @@
 .App {
   text-align: center;
+
+  #logo {
+    $img-size: 50px;
+    width: $img-size;
+    height: $img-size;
+  }
+
+  .main-content {
+    margin-left: 10%;
+    margin-right: 20%;
+  }
 }

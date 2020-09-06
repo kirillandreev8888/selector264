@@ -1,0 +1,20 @@
+.TitleCard{
+    .card{
+        margin-top: 15px;
+        display: flex;
+        flex-direction: row;
+        padding: 5px 15px;
+        .card-img{
+            display: block;
+            max-width:250px;
+            max-height:125px;
+            width: auto;
+            height: auto;
+            margin: auto;
+        }
+        .card-title{
+            font-size: 2em;
+        }
+
+    }
+}
