@@ -17,6 +17,8 @@ import firebase from "firebase/app"
 import "firebase/database"
 import { FirebaseDatabaseProvider } from "@react-firebase/database"
 import { config } from "./config"
+import CreateTitle from './components/pages/CreateTitle';
+import EditTitle from './components/pages/EditTitle';
 
 
 function App() {
@@ -49,6 +51,7 @@ function App() {
 					<Navbar.Brand><img id="logo" src={logo} alt="Logo" /></Navbar.Brand>
 					<Nav className="mr-auto">
 						<Nav.Link href="/list">Список</Nav.Link>
+						<Nav.Link href="/add">Добавить</Nav.Link>
 						<Nav.Link href="/archive">Архив</Nav.Link>
 					</Nav>
 				</Navbar>
@@ -58,6 +61,12 @@ function App() {
 						<Switch>
 							<Route path="/list">
 								<List></List>
+							</Route>
+							<Route path="/add">
+								<CreateTitle></CreateTitle>
+							</Route>
+							<Route path="/edit">
+								<EditTitle></EditTitle>
 							</Route>
 							<Route path="/archive">
 								<h1>This is archive</h1>

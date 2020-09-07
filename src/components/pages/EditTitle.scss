@@ -1,0 +1,17 @@
+.EditTitle{
+    .card{
+        margin-top: 15px;
+        display: flex;
+        flex-direction: row;
+        padding: 5px 15px;
+        .card-img{
+            display: block;
+            max-width:500;
+            max-height:250px;
+            width: auto;
+            height: auto;
+            margin: auto;
+        }
+    }
+
+}

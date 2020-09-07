@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import TitleCard from '../elements/TitleCard'
 
 import { FirebaseDatabaseNode } from "@react-firebase/database"
@@ -16,7 +16,8 @@ function List() {
                 <TitleCard key={key}
                     id={key}
                     name={elem.name}
-                    status={elem.status}
+                    // status={elem.status}
+                    path="titles/"
                     pic={elem.pic}
                     shiki_link={elem.shiki_link}
                     watch_link={elem.watch_link}
@@ -46,29 +47,6 @@ function List() {
                 }
 
             </FirebaseDatabaseNode>
-            {/* <FirebaseDatabaseMutation type="push" path="titles/">
-                {({ runMutation }) => {
-                    return (
-                        <div>
-                            <div>{state}</div>
-                            <button
-                                data-testid="test-push"
-                                onClick={async () => {
-                                    const { key } = await runMutation({
-                                        "name": "Test",
-                                        "status": "list",
-                                        "pic": "http://localhost:3000/static/media/logo.73def47c.svg",
-                                        "shiki_link": "",
-                                        "watch_link": ""
-                                    });
-                                    setState(key);
-                                }}
-                            >Push</button>
-                        </div>
-                    );
-                }}
-
-            </FirebaseDatabaseMutation> */}
         </div>
     )
 }
