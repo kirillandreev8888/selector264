@@ -11,6 +11,12 @@
             width: auto;
             height: auto;
             margin: auto;
+
+            transition: transform 0.2s;
+            &:hover{
+                transform: scale(3);
+                z-index: 99999;
+            }
         }
         .card-title{
             font-size: 2em;

@@ -12,12 +12,15 @@ import qs from "qs"
 import logo from "../../static/logo.svg"
 import { withRouter } from 'react-router-dom'
 
+let params;
+
 function EditTitle(props) {
 
 
     useEffect(() => {
-        const params = qs.parse(props.location.search.slice(1));
-        firebase.database().ref(params.from + params.key).once("value").then((snapshot) => {
+        params = qs.parse(props.location.search.slice(1));
+        setPath(params.from);
+        firebase.database().ref(props.user + '/' + params.from + params.key).once("value").then((snapshot) => {
             const title = snapshot.val();
             setStatus(title.status)
             setName(title.name)
@@ -113,31 +116,80 @@ function EditTitle(props) {
                                 <Form.Control value={shiki_link} type="text" placeholder="Ссылка на шикимори" onChange={(e) => { setShiki_link(e.target.value) }} />
                             </InputGroup>
                         </Form.Group>
-                        <Form.Group controlId="title_status" >
-                            <Form.Label>Категория</Form.Label>
-                            <Form.Control value={status} as="select" onChange={(e) => {
-                                const newStatus = e.target.value;
-                                setStatus(newStatus);
-                                if (newStatus !== "archive")
-                                    setPath("titles/")
-                                else
-                                    setPath("archive/")
+                        {(() => {
+                            if (path === "titles/") {
+                                return (
+                                    <Form.Group controlId="title_status" >
+                                        <Form.Label>Категория</Form.Label>
+                                        <Form.Control value={status} as="select" onChange={(e) => {
+                                            const newStatus = e.target.value;
+                                            setStatus(newStatus);
+                                            if (newStatus !== "archive")
+                                                setPath("titles/")
+                                            else
+                                                setPath("archive/")
 
-                            }}>
-                                <option value="list">Основной список</option>
-                                <option value="ongoing">Онгоинг</option>
-                                <option value="archive">Архив</option>
-                            </Form.Control>
-                        </Form.Group>
+                                        }}>
+                                            <option value="list">Основной список</option>
+                                            <option value="ongoing">Онгоинг</option>
+                                        </Form.Control>
+                                    </Form.Group>
+                                )
+                            }
+                        })()}
+
+                        <Button variant="danger" onClick={() => {
+                            firebase.database().ref(props.user + '/' + path + params.key).remove((err) => {
+                                if (err)
+                                    alert(err)
+                                else
+                                    if (path !== "archive/")
+                                        document.location.href = "../"
+                                    else
+                                        document.location.href = "../archive"
+                            });
+                        }}>Удалить</Button>
+                        {' '}
+                        {(() => {
+                            if (path === "titles/") {
+                                return (
+                                    <Button style={{ marginRight: "0.33em" }} variant="secondary" onClick={() => {
+                                        firebase.database().ref(props.user + '/titles/' + params.key).remove().then(() => {
+                                            firebase.database().ref(props.user + '/archive/').push({
+                                                "name": name,
+                                                "status": status,
+                                                "pic": pic,
+                                                "shiki_link": shiki_link,
+                                                "watch_link": watch_link
+                                            }, (err) => {
+                                                if (err)
+                                                    alert(err)
+                                                else
+                                                    document.location.href = "../"
+                                            });
+                                        });
+                                    }}>Архивировать</Button>
+                                )
+                            }
+                        })()}
                         <Button variant="success" onClick={() => {
-                            firebase.database().ref(path).push({
+                            firebase.database().ref(props.user + '/' + path + params.key).update({
                                 "name": name,
                                 "status": status,
                                 "pic": pic,
                                 "shiki_link": shiki_link,
                                 "watch_link": watch_link
-                            });
-                        }}>Добавить</Button>
+                            }).then((err) => {
+                                if (err)
+                                    alert(err)
+                                else
+                                    if (path !== "archive/")
+                                        document.location.href = "../"
+                                    else
+                                        document.location.href = "../archive"
+
+                            })
+                        }}>Сохранить изменения</Button>
                     </Form>
                 </Card.Body>
             </Card>

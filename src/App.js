@@ -1,10 +1,10 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import './App.scss';
 import { Helmet, HelmetProvider } from 'react-helmet-async';
 import { Switch, Route, Redirect } from "react-router-dom"
 //bootstrap
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { Navbar, Nav } from "react-bootstrap"
+import { Navbar, Nav, NavDropdown } from "react-bootstrap"
 //custom
 import logo from "./static/logo.svg"
 // import axios from "axios"
@@ -19,9 +19,20 @@ import { FirebaseDatabaseProvider } from "@react-firebase/database"
 import { config } from "./config"
 import CreateTitle from './components/pages/CreateTitle';
 import EditTitle from './components/pages/EditTitle';
+import ListWrapper from './components/pages/ListWrapper';
 
 
 function App() {
+	const [user, setUser] = useState("ker264");
+
+	useEffect(()=>{
+		let savedUser = localStorage.getItem("savedUser");
+		if(savedUser !== null)
+			setUser(savedUser)
+	},[])
+	useEffect(()=>{
+		localStorage.setItem("savedUser", user)
+	}, [user])
 
 	// useEffect(() => {
 	// 	const url = "https://shikimori.one/animes/z21-one-piece";
@@ -54,22 +65,27 @@ function App() {
 						<Nav.Link href="/add">Добавить</Nav.Link>
 						<Nav.Link href="/archive">Архив</Nav.Link>
 					</Nav>
+					<NavDropdown variant="info" title={user} id="basic-nav-dropdown" style={{marginRight: "30px"}}>
+						<NavDropdown.Item onSelect={()=> setUser("ker264")} >ker264</NavDropdown.Item>
+						<NavDropdown.Item onSelect={()=> setUser("LordAsheron")}>LordAsheron</NavDropdown.Item>
+						{/* <NavDropdown.Divider /> */}
+					</NavDropdown>
 				</Navbar>
 
 				<FirebaseDatabaseProvider firebase={firebase} {...config}>
 					<div className="main-content">
 						<Switch>
 							<Route path="/list">
-								<List></List>
+								<ListWrapper user={user} path="titles"></ListWrapper>
 							</Route>
 							<Route path="/add">
-								<CreateTitle></CreateTitle>
+								<CreateTitle user={user}></CreateTitle>
 							</Route>
 							<Route path="/edit">
-								<EditTitle></EditTitle>
+								<EditTitle user={user}></EditTitle>
 							</Route>
 							<Route path="/archive">
-								<h1>This is archive</h1>
+								<List user={user} path="archive"></List>
 							</Route>
 							<Redirect from="/" to="/list" />
 						</Switch>
