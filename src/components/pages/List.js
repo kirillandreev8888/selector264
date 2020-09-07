@@ -4,7 +4,7 @@ import TitleCard from '../elements/TitleCard'
 import { FirebaseDatabaseNode } from "@react-firebase/database"
 import { Spinner } from 'react-bootstrap'
 
-function List() {
+function List(props) {
 
     // const [state, setState] = useState("defaultState");
 
@@ -12,12 +12,13 @@ function List() {
         let res = [];
         for (let key in data) {
             const elem = data[key];
+            if (!props.status || props.status===elem.status)
             res.push(
                 <TitleCard key={key}
                     id={key}
                     name={elem.name}
                     // status={elem.status}
-                    path="titles/"
+                    path={`${props.path}/`}
                     pic={elem.pic}
                     shiki_link={elem.shiki_link}
                     watch_link={elem.watch_link}
@@ -27,10 +28,12 @@ function List() {
     }
 
     return (
+
         <div className="List">
             <FirebaseDatabaseNode
-                path="titles/"
+                path={`${props.user}/${props.path}`}
                 orderByKey>{d => {
+                    console.log(d)
                     if (d.value) {
                         return (
                             <div>

@@ -10,7 +10,7 @@ import axios from "axios"
 
 import logo from "../../static/logo.svg"
 
-function CreateTitle() {
+function CreateTitle(props) {
 
     const parseFromShikimori = () => {
         if (shiki_link.indexOf("shikimori") !== -1) {
@@ -115,12 +115,18 @@ function CreateTitle() {
                             </Form.Control>
                         </Form.Group>
                         <Button variant="success" onClick={() => {
-                            firebase.database().ref(path).push({
-                                "name": name,
+                            firebase.database().ref(props.user + '/' + path).push({
+                                "name": (name!=="")? name: "Без имени",
                                 "status": status,
                                 "pic": pic,
                                 "shiki_link": shiki_link,
                                 "watch_link": watch_link
+                            }, (err) => {
+                                if (err)
+                                    alert(err)
+                                else {
+                                    document.location.href="../"
+                                }
                             });
                         }}>Добавить</Button>
                     </Form>

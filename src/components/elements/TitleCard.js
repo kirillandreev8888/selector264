@@ -7,7 +7,7 @@ function TitleCard(props) {
     return (
         <div className="TitleCard">
             <Card >
-                <Card.Img width="100%" src={props.pic} alt="Нет картинки" />
+                <Card.Img className="animate1" width="100%" src={props.pic} alt="Нет картинки" />
                 <Card.Body>
                     <Card.Title ><Link to={{pathname:`edit`, search: `?key=${props.id}&from=${props.path}`}}>{props.name}</Link></Card.Title>
                     {/* <div>{props.id}</div> */}
