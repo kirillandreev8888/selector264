@@ -6,23 +6,27 @@ import { Spinner } from 'react-bootstrap'
 
 function List(props) {
 
-    // const [state, setState] = useState("defaultState");
-
     const unpack = data => {//функция - распаковщик, перебирающая поля в объекте, так как с автогенерируемыми ключами итерация как по массиву больше не работает
         let res = [];
+        let titleNames = [];
         for (let key in data) {
             const elem = data[key];
-            if (!props.status || props.status===elem.status)
-            res.push(
-                <TitleCard key={key}
-                    id={key}
-                    name={elem.name}
-                    // status={elem.status}
-                    path={`${props.path}/`}
-                    pic={elem.pic}
-                    shiki_link={elem.shiki_link}
-                    watch_link={elem.watch_link}
-                ></TitleCard>);
+            if (!props.status || props.status === elem.status)
+                res.push(
+                    <TitleCard key={key}
+                        id={key}
+                        name={elem.name}
+                        // status={elem.status}
+                        path={`${props.path}/`}
+                        pic={elem.pic}
+                        shiki_link={elem.shiki_link}
+                        watch_link={elem.watch_link}
+                    ></TitleCard>);
+            if (elem.status === "list")
+                titleNames.push(elem.name);
+        }
+        if (props.setListOfTitles) {
+            props.setListOfTitles(titleNames);
         }
         return res;
     }
@@ -33,7 +37,6 @@ function List(props) {
             <FirebaseDatabaseNode
                 path={`${props.user}/${props.path}`}
                 orderByKey>{d => {
-                    console.log(d)
                     if (d.value) {
                         return (
                             <div>

@@ -7,12 +7,30 @@
     height: $img-size;
   }
 
-  .main-content {
+  .main-container {
     margin-left: 10%;
-    margin-right: 20%;
+    .main-content {
+      width: 75%;
+    }
+    .side-content {
+      width: 25%;
+      .btn{
+        margin: 100px auto;
+      }
+      // .side-menu {
+      //   margin: 50px auto;
+      //   width: 80%;
+      //   border: solid 1px black;
+      //   background-color: lightgray;
+      //   .btn {
+      //     background-color: white;
+      //   }
+      // }
+    }
   }
 
-.dropdown-toggle, nav-link{
-  color: white;
-}
+  .dropdown-toggle,
+  nav-link {
+    color: white;
+  }
 }
