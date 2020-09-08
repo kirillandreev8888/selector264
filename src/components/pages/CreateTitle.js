@@ -58,6 +58,30 @@ function CreateTitle(props) {
 
     }
 
+    const parseFromJutSu = () => {
+        if (watch_link.indexOf("jut.su") !== -1) {
+            const proxyurl = "https://cors-anywhere.herokuapp.com/";
+            axios.get(proxyurl + watch_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
+                res => {
+                    const root = parse(res.data);
+                    const str = root.querySelector(".all_anime_title").getAttribute("style");
+                    setPic(str.substring(str.indexOf('(')+2, str.indexOf(')')-1))
+                    let newName = root.querySelector('h1').innerHTML
+                    newName = newName.replace('Смотреть ','').replace(' все серии', '').replace(' и сезоны', '');
+                    setName(newName)
+                    const newStat = root.querySelector(".under_video_additional").innerHTML
+                    if (newStat.indexOf("онгоинг") === -1) {
+                        setStatus("list")
+                    } else {
+                        setStatus("ongoing")
+                    }
+                }
+            )
+        }
+        else
+            alert("Неправильная ссылка")
+    }
+
     const [path, setPath] = useState("titles/");
     const [status, setStatus] = useState("list");
     const [name, setName] = useState("");
@@ -75,18 +99,20 @@ function CreateTitle(props) {
                         <Form.Group controlId="title_name">
                             <Form.Control value={name} type="text" placeholder="Название" onChange={(e) => { setName(e.target.value) }} />
                             <Form.Text className="text-muted">
-                                Название и картинка автоматически загрузятся, если вставить ссылку с shikimori или animespirit
+                                Название, картинка и категория автоматически загрузятся, если вставить ссылку с shikimori, animespirit или jut.su
                                 </Form.Text>
                         </Form.Group>
                         <Form.Group controlId="title_watch_link">
                             <InputGroup className="mb-3" >
                                 <InputGroup.Prepend>
-                                    <Button variant="danger" onClick={parseFromAnimespirit}>Парсить с animespirit</Button>
+                                    <Button variant="warning" onClick={parseFromAnimespirit}>animespirit</Button>
+                                    <Button variant="dark" onClick={parseFromJutSu}>jut.su</Button>
+                                    
                                 </InputGroup.Prepend>
                                 <Form.Control value={watch_link} type="text" placeholder="Ссылка на просмотр" onChange={(e) => { setWatch_link(e.target.value) }} />
                             </InputGroup>
                             <Form.Text className="text-muted">
-                                Парсинг доступен для animespirit, но может лагать из-за их кривой верстки
+                                Парсер ссылок для просмотра может работать некорректно. Картинки с animespirit не отображаются без VPN.
                                 </Form.Text>
                         </Form.Group>
                         {/* TODO подправить отступ */}
