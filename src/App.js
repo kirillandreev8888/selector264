@@ -91,10 +91,15 @@ function App(props) {
 						</div>
 						<div className="side-content">
 							{/* <div className="side-menu"> */}
-							<Button variant={(props.location.pathname === "/list")? "outline-success" : "danger"} onClick={() => {
-								setRndTitle(listOfTitles[new Random().integer(0,listOfTitles.length-1)]);
-							}}>Выбрать случайное </Button>
-							<h4 style={{margin: "auto"}}>{rndTitle}</h4>
+							{(() => { //кнопка "случайно"
+								if (props.location.pathname === "/list")
+									return (
+										<Button variant="outline-success" onClick={() => {
+											setRndTitle(listOfTitles[new Random().integer(0, listOfTitles.length - 1)]);
+										}}>Выбрать случайное </Button>);
+							})()}
+
+							<h4 style={{ margin: "auto" }}>{rndTitle}</h4>
 							{/* </div> */}
 						</div>
 					</div>
