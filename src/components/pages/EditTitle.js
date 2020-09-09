@@ -132,7 +132,6 @@ function EditTitle(props) {
                                 Парсинг доступен для animespirit, но может лагать из-за их кривой верстки
                                 </Form.Text>
                         </Form.Group>
-                        {/* TODO подправить отступ */}
                         <Form.Group controlId="title_shiki_link">
                             <InputGroup className="mb-3" >
                                 <InputGroup.Prepend>

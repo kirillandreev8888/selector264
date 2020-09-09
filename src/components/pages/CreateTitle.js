@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import "./CreateTitle.scss"
 
 // import { FirebaseDatabaseMutation } from "@react-firebase/database"
@@ -7,10 +7,14 @@ import "firebase/database"
 import { Card, InputGroup, Form, Button } from 'react-bootstrap'
 import { parse } from 'node-html-parser';
 import axios from "axios"
+import qs from "qs"
 
 import logo from "../../static/logo.svg"
+import { withRouter } from 'react-router-dom'
 
 function CreateTitle(props) {
+
+
 
     const parseFromShikimori = () => {
         if (shiki_link.indexOf("shikimori") !== -1) {
@@ -58,16 +62,22 @@ function CreateTitle(props) {
 
     }
 
-    const parseFromJutSu = () => {
-        if (watch_link.indexOf("jut.su") !== -1) {
+    const parseFromJutSu = (link) => {
+        let localWath_link;
+        if (typeof link === "string"){
+            setWatch_link(link);
+            localWath_link=link;
+        }else
+        localWath_link = watch_link;
+        if (localWath_link.indexOf("jut.su") !== -1) {
             const proxyurl = "https://cors-anywhere.herokuapp.com/";
-            axios.get(proxyurl + watch_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
+            axios.get(proxyurl + localWath_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
                 res => {
                     const root = parse(res.data);
                     const str = root.querySelector(".all_anime_title").getAttribute("style");
-                    setPic(str.substring(str.indexOf('(')+2, str.indexOf(')')-1))
+                    setPic(str.substring(str.indexOf('(') + 2, str.indexOf(')') - 1))
                     let newName = root.querySelector('h1').innerHTML
-                    newName = newName.replace('Смотреть ','').replace(' все серии', '').replace(' и сезоны', '');
+                    newName = newName.replace('Смотреть ', '').replace(' - все серии', '').replace(' все серии', '').replace(' и сезоны', '');
                     setName(newName)
                     const newStat = root.querySelector(".under_video_additional").innerHTML
                     if (newStat.indexOf("онгоинг") === -1) {
@@ -89,6 +99,19 @@ function CreateTitle(props) {
     const [watch_link, setWatch_link] = useState("");
     const [shiki_link, setShiki_link] = useState("");
 
+    useEffect(() => {
+        const params = qs.parse(props.location.search.slice(1));
+        if (params.jutsulink) {
+            parseFromJutSu(params.jutsulink);
+        }
+    }, [])
+
+    // useEffect(() => {
+    //     watch_linkSetFromURL = false;
+    //     if (watch_link!=)
+    //     parseFromJutSu();
+    // }, [watch_link]);
+
     return (
         <div className="CreateTitle">
             <Card>
@@ -107,7 +130,7 @@ function CreateTitle(props) {
                                 <InputGroup.Prepend>
                                     <Button variant="warning" onClick={parseFromAnimespirit}>animespirit</Button>
                                     <Button variant="dark" onClick={parseFromJutSu}>jut.su</Button>
-                                    
+
                                 </InputGroup.Prepend>
                                 <Form.Control value={watch_link} type="text" placeholder="Ссылка на просмотр" onChange={(e) => { setWatch_link(e.target.value) }} />
                             </InputGroup>
@@ -115,7 +138,6 @@ function CreateTitle(props) {
                                 Парсер ссылок для просмотра может работать некорректно. Картинки с animespirit не отображаются без VPN.
                                 </Form.Text>
                         </Form.Group>
-                        {/* TODO подправить отступ */}
                         <Form.Group controlId="title_shiki_link">
                             <InputGroup className="mb-3" >
                                 <InputGroup.Prepend>
@@ -142,7 +164,7 @@ function CreateTitle(props) {
                         </Form.Group>
                         <Button variant="success" onClick={() => {
                             firebase.database().ref(props.user + '/' + path).push({
-                                "name": (name!=="")? name: "Без имени",
+                                "name": (name !== "") ? name : "Без имени",
                                 "status": status,
                                 "pic": pic,
                                 "shiki_link": shiki_link,
@@ -151,7 +173,7 @@ function CreateTitle(props) {
                                 if (err)
                                     alert(err)
                                 else {
-                                    document.location.href="../"
+                                    document.location.href = "../"
                                 }
                             });
                         }}>Добавить</Button>
@@ -164,4 +186,4 @@ function CreateTitle(props) {
     )
 }
 
-export default CreateTitle
+export default withRouter(CreateTitle)
