@@ -112,7 +112,7 @@ function App(props) {
 												setRndTitle(listOfTitles[new Random().integer(0, listOfTitles.length - 1)]);
 											}}>Выбрать случайное </Button>
 											<h4 style={{ margin: "auto" }}>{rndTitle.name}</h4>
-											<img src={rndTitle.pic} alt="" />
+											<img style={{marginTop: "10px", maxWidth: "250px", maxHeight: "350px"}} src={rndTitle.pic} alt="" />
 
 										</div>
 									);
