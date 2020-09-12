@@ -1,6 +1,7 @@
 .TitleCard {
     $border-style: solid lightgray 1px;
 
+    // контур и фон для раскрывающегося элемента
     .card-header {
         cursor: pointer;
         background-color: white;
@@ -8,10 +9,40 @@
         border-right: $border-style;
     }
     &:first-of-type {
+        //отдельно для 1, так как у них по умолчанию граница только снизу
         .accordion {
             .card-header {
                 border-top: $border-style;
                 margin-top: 15px;
+            }
+        }
+    }
+
+    .accordion { //для Min варианта
+        .card {
+            display: flex;
+            flex-direction: row;
+            padding: 5px 15px;
+            .card-img {
+                display: block;
+                max-height: 187.5px;
+                width: auto;
+                height: auto;
+                margin: auto;
+                transition: transform 0.2s;
+                &:hover {
+                    transform: scale(2);
+                    z-index: 99999;
+                }
+            }
+            .btn{
+                display: block;
+                margin: auto;
+                margin-top: 10px;
+                &:first-child{
+                    margin-top: 0px;
+                }
+
             }
         }
     }
@@ -23,12 +54,10 @@
         padding: 5px 15px;
         .card-img {
             display: block;
-            max-width: 250px;
             max-height: 125px;
             width: auto;
             height: auto;
             margin: auto;
-
             transition: transform 0.2s;
             &:hover {
                 transform: scale(3);
