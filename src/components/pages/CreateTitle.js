@@ -104,13 +104,8 @@ function CreateTitle(props) {
         if (params.jutsulink) {
             parseFromJutSu(params.jutsulink);
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-
-    // useEffect(() => {
-    //     watch_linkSetFromURL = false;
-    //     if (watch_link!=)
-    //     parseFromJutSu();
-    // }, [watch_link]);
 
     return (
         <div className="CreateTitle">
@@ -173,7 +168,7 @@ function CreateTitle(props) {
                                 if (err)
                                     alert(err)
                                 else {
-                                    document.location.href = "../"
+                                    props.history.push("../")
                                 }
                             });
                         }}>Добавить</Button>

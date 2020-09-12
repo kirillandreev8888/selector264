@@ -1,26 +1,42 @@
-.TitleCard{
-    .card{
+.TitleCard {
+    $border-style: solid lightgray 1px;
+
+    .card-header {
+        cursor: pointer;
+        background-color: white;
+        border-left: $border-style;
+        border-right: $border-style;
+    }
+    &:first-of-type {
+        .accordion {
+            .card-header {
+                border-top: $border-style;
+                margin-top: 15px;
+            }
+        }
+    }
+
+    .card {
         margin-top: 15px;
         display: flex;
         flex-direction: row;
         padding: 5px 15px;
-        .card-img{
+        .card-img {
             display: block;
-            max-width:250px;
-            max-height:125px;
+            max-width: 250px;
+            max-height: 125px;
             width: auto;
             height: auto;
             margin: auto;
 
             transition: transform 0.2s;
-            &:hover{
+            &:hover {
                 transform: scale(3);
                 z-index: 99999;
             }
         }
-        .card-title{
+        .card-title {
             font-size: 2em;
         }
-
     }
 }

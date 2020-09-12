@@ -28,6 +28,7 @@ function EditTitle(props) {
             setWatch_link(title.watch_link)
             setShiki_link(title.shiki_link)
         })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
 
     const parseFromShikimori = () => {
@@ -168,9 +169,9 @@ function EditTitle(props) {
                                     alert(err)
                                 else
                                     if (path !== "archive/")
-                                        document.location.href = "../"
+                                        props.history.push("../")
                                     else
-                                        document.location.href = "../archive"
+                                        props.history.push("../archive")
                             });
                         }}>Удалить</Button>
                         {' '}
@@ -189,7 +190,7 @@ function EditTitle(props) {
                                                 if (err)
                                                     alert(err)
                                                 else
-                                                    document.location.href = "../"
+                                                    props.history.push("../")
                                             });
                                         });
                                     }}>Архивировать</Button>
@@ -208,10 +209,9 @@ function EditTitle(props) {
                                     alert(err)
                                 else
                                     if (path !== "archive/")
-                                        document.location.href = "../"
+                                        props.history.push("../")
                                     else
-                                        document.location.href = "../archive"
-
+                                        props.history.push("../archive")
                             })
                         }}>Сохранить изменения</Button>
                     </Form>
