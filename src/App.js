@@ -79,6 +79,7 @@ function App(props) {
 					<NavDropdown variant="info" title={user} id="basic-nav-dropdown" style={{ marginRight: "30px" }}>
 						<NavDropdown.Item onSelect={() => setUser("ker264")} >ker264</NavDropdown.Item>
 						<NavDropdown.Item onSelect={() => setUser("LordAsheron")}>LordAsheron</NavDropdown.Item>
+						<NavDropdown.Item onSelect={() => setUser("Tecnika")}>Tecnika</NavDropdown.Item>
 						{/* <NavDropdown.Divider /> */}
 					</NavDropdown>
 				</Navbar>

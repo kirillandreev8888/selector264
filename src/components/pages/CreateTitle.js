@@ -18,14 +18,14 @@ function CreateTitle(props) {
 
     const parseFromShikimori = () => {
         if (shiki_link.indexOf("shikimori") !== -1) {
-            const proxyurl = "https://cors-anywhere.herokuapp.com/";
+            const proxyurl = "https://quiet-crag-04302.herokuapp.com/";
             fetch(proxyurl + shiki_link)
                 .then(response => response.text())
                 .then(contents => {
                     const root = parse(contents);
                     setPic(root.querySelector('.c-poster center img').getAttribute("src"));
-                    const newName = root.querySelector('h1').innerHTML.split('</span>');
-                    setName(newName[newName.length - 1]);
+                    const newName = root.querySelector('h1').innerHTML.split('<span');
+                    setName(newName[0]);
                     const newStat = root.querySelector(".b-anime_status_tag").getAttribute("data-text");
                     if (newStat === "вышло") {
                         setStatus("list")
@@ -42,12 +42,12 @@ function CreateTitle(props) {
 
     const parseFromAnimespirit = () => {
         if (watch_link.indexOf("animespirit") !== -1) {
-            const proxyurl = "https://cors-anywhere.herokuapp.com/";
+            const proxyurl = "https://quiet-crag-04302.herokuapp.com/";
             axios.get(proxyurl + watch_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
                 res => {
                     const root = parse(res.data);
                     setPic(root.querySelector("a.highslide img").getAttribute("src"))
-                    setName(root.querySelectorAll('h3')[4].innerHTML)
+                    setName(root.querySelector('.content-block .content-block-title a').innerHTML)
                     const newStat = root.querySelector("#ratig-layer").parentNode.innerHTML
                     if (newStat.indexOf("Онгоинг") === -1) {
                         setStatus("list")
@@ -62,22 +62,16 @@ function CreateTitle(props) {
 
     }
 
-    const parseFromJutSu = (link) => {
-        let localWath_link;
-        if (typeof link === "string"){
-            setWatch_link(link);
-            localWath_link=link;
-        }else
-        localWath_link = watch_link;
-        if (localWath_link.indexOf("jut.su") !== -1) {
-            const proxyurl = "https://cors-anywhere.herokuapp.com/";
-            axios.get(proxyurl + localWath_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
+    const parseFromJutSu = () => {
+        if (watch_link.indexOf("jut.su") !== -1) {
+            const proxyurl = "https://quiet-crag-04302.herokuapp.com/";
+            axios.get(proxyurl + watch_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
                 res => {
                     const root = parse(res.data);
                     const str = root.querySelector(".all_anime_title").getAttribute("style");
                     setPic(str.substring(str.indexOf('(') + 2, str.indexOf(')') - 1))
                     let newName = root.querySelector('h1').innerHTML
-                    newName = newName.replace('Смотреть ', '').replace(' - все серии', '').replace(' все серии', '').replace(' и сезоны', '');
+                    newName = newName.replace('Смотреть ', '').replace(' все серии', '').replace(' и сезоны', '');
                     setName(newName)
                     const newStat = root.querySelector(".under_video_additional").innerHTML
                     if (newStat.indexOf("онгоинг") === -1) {
@@ -130,7 +124,7 @@ function CreateTitle(props) {
                                 <Form.Control value={watch_link} type="text" placeholder="Ссылка на просмотр" onChange={(e) => { setWatch_link(e.target.value) }} />
                             </InputGroup>
                             <Form.Text className="text-muted">
-                                Парсер ссылок для просмотра может работать некорректно. Картинки с animespirit не отображаются без VPN.
+                            Прокси парсера НЕСТАБИЛЬНО. Если долго не отвечает, нужно попробовать еще раз. Может не сработать вообще. Особенно с animespirit.
                                 </Form.Text>
                         </Form.Group>
                         <Form.Group controlId="title_shiki_link">

@@ -33,14 +33,14 @@ function EditTitle(props) {
 
     const parseFromShikimori = () => {
         if (shiki_link.indexOf("shikimori") !== -1) {
-            const proxyurl = "https://cors-anywhere.herokuapp.com/";
+            const proxyurl = "https://quiet-crag-04302.herokuapp.com/";
             fetch(proxyurl + shiki_link)
                 .then(response => response.text())
                 .then(contents => {
                     const root = parse(contents);
                     setPic(root.querySelector('.c-poster center img').getAttribute("src"));
-                    const newName = root.querySelector('h1').innerHTML.split('</span>');
-                    setName(newName[newName.length - 1]);
+                    const newName = root.querySelector('h1').innerHTML.split('<span');
+                    setName(newName[0]);
                     const newStat = root.querySelector(".b-anime_status_tag").getAttribute("data-text");
                     if (newStat === "вышло") {
                         setStatus("list")
@@ -57,12 +57,12 @@ function EditTitle(props) {
 
     const parseFromAnimespirit = () => {
         if (watch_link.indexOf("animespirit") !== -1) {
-            const proxyurl = "https://cors-anywhere.herokuapp.com/";
+            const proxyurl = "https://quiet-crag-04302.herokuapp.com/";
             axios.get(proxyurl + watch_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
                 res => {
                     const root = parse(res.data);
                     setPic(root.querySelector("a.highslide img").getAttribute("src"))
-                    setName(root.querySelectorAll('h3')[4].innerHTML)
+                    setName(root.querySelector('.content-block .content-block-title a').innerHTML)
                     const newStat = root.querySelector("#ratig-layer").parentNode.innerHTML
                     if (newStat.indexOf("Онгоинг") === -1) {
                         setStatus("list")
@@ -79,7 +79,7 @@ function EditTitle(props) {
 
     const parseFromJutSu = () => {
         if (watch_link.indexOf("jut.su") !== -1) {
-            const proxyurl = "https://cors-anywhere.herokuapp.com/";
+            const proxyurl = "https://quiet-crag-04302.herokuapp.com/";
             axios.get(proxyurl + watch_link, { headers: { 'X-Requested-With': 'XMLHttpRequest' } }).then(
                 res => {
                     const root = parse(res.data);
@@ -130,7 +130,7 @@ function EditTitle(props) {
                                 <Form.Control value={watch_link} type="text" placeholder="Ссылка на просмотр" onChange={(e) => { setWatch_link(e.target.value) }} />
                             </InputGroup>
                             <Form.Text className="text-muted">
-                                Парсинг доступен для animespirit, но может лагать из-за их кривой верстки
+                                Прокси парсера НЕСТАБИЛЬНО. Если долго не отвечает, нужно попробовать еще раз. Может не сработать вообще. Особенно с animespirit.
                                 </Form.Text>
                         </Form.Group>
                         <Form.Group controlId="title_shiki_link">
@@ -193,7 +193,7 @@ function EditTitle(props) {
                                                     props.history.push("../")
                                             });
                                         });
-                                    }}>Архивировать</Button>
+                                    }}>Просмотрено</Button> //TODO ПОМЕНЯТЬ ЦВЕТ КНОПКИ
                                 )
                             }
                         })()}
