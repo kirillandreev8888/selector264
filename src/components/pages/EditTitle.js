@@ -193,7 +193,23 @@ function EditTitle(props) {
                                                     props.history.push("../")
                                             });
                                         });
-                                    }}>Просмотрено</Button> //TODO ПОМЕНЯТЬ ЦВЕТ КНОПКИ
+                                    }}>Просмотрено</Button>
+                                )
+                            }
+                        })()}
+                        {(() => {
+                            if (path === "titles/" && status ==="ongoing") {
+                                return (
+                                    <Button style={{ marginRight: "0.33em" }} variant="primary" onClick={() => {
+                                        firebase.database().ref(props.user + '/titles/' + params.key).update({
+                                            status: "list"
+                                        }, (err) => {
+                                            if (err)
+                                                alert(err)
+                                            else
+                                                props.history.push("../")
+                                        })
+                                    }}>Вышло</Button>
                                 )
                             }
                         })()}
