@@ -20,7 +20,7 @@ function EditTitle(props) {
     useEffect(() => {
         params = qs.parse(props.location.search.slice(1));
         setPath(params.from);
-        firebase.database().ref(props.user + '/' + params.from + params.key).once("value").then((snapshot) => {
+        firebase.database().ref(props.currentListOwner + '/' + params.from + params.key).once("value").then((snapshot) => {
             const title = snapshot.val();
             setStatus(title.status)
             setName(title.name)
@@ -164,7 +164,7 @@ function EditTitle(props) {
                         })()}
 
                         <Button variant="danger" onClick={() => {
-                            firebase.database().ref(props.user + '/' + path + params.key).remove((err) => {
+                            firebase.database().ref(props.currentListOwner + '/' + path + params.key).remove((err) => {
                                 if (err)
                                     alert(err)
                                 else
@@ -179,8 +179,8 @@ function EditTitle(props) {
                             if (path === "titles/") {
                                 return (
                                     <Button style={{ marginRight: "0.33em" }} variant="secondary" onClick={() => {
-                                        firebase.database().ref(props.user + '/titles/' + params.key).remove().then(() => {
-                                            firebase.database().ref(props.user + '/archive/').push({
+                                        firebase.database().ref(props.currentListOwner + '/titles/' + params.key).remove().then(() => {
+                                            firebase.database().ref(props.currentListOwner + '/archive/').push({
                                                 "name": name,
                                                 "status": status,
                                                 "pic": pic,
@@ -201,7 +201,7 @@ function EditTitle(props) {
                             if (path === "titles/" && status ==="ongoing") {
                                 return (
                                     <Button style={{ marginRight: "0.33em" }} variant="primary" onClick={() => {
-                                        firebase.database().ref(props.user + '/titles/' + params.key).update({
+                                        firebase.database().ref(props.currentListOwner + '/titles/' + params.key).update({
                                             status: "list"
                                         }, (err) => {
                                             if (err)
@@ -214,7 +214,7 @@ function EditTitle(props) {
                             }
                         })()}
                         <Button variant="success" onClick={() => {
-                            firebase.database().ref(props.user + '/' + path + params.key).update({
+                            firebase.database().ref(props.currentListOwner + '/' + path + params.key).update({
                                 "name": name,
                                 "status": status,
                                 "pic": pic,

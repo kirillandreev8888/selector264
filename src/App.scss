@@ -33,4 +33,20 @@
   nav-link {
     color: white;
   }
+
+  .nav-dropdown-container{
+    padding: 0.5rem 1rem;
+    .nav-dropdown-label{
+        color:  rgba(255,255,255,.5) !important
+    }
+    .dropdown{
+        .dropdown-toggle{
+            padding: 0 0 0 10px;
+        }
+        .dropdown-menu{
+            left: -70px;
+        }
+    }
+  }
+
 }

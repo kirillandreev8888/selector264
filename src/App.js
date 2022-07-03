@@ -23,15 +23,20 @@ import firebase from "firebase/app"
 import "firebase/database"
 import { FirebaseDatabaseProvider } from "@react-firebase/database"
 import { config } from "./config"
+import Subjects from './global.service';
 
 function App(props) {
-	//в началае достает пользователя из localstorage
-	const [user, setUser] = useState(!localStorage.getItem("savedUser") ? "ker264" : localStorage.getItem("savedUser"));
+	//настройки досаются из localStorage в начале
+
+    //currentListOwner - чей список в данный момент просматривается
+	const [currentListOwner, setCurrentListOwner] = useState(!localStorage.getItem("savedCurrentListOwner") ? "ker264" : localStorage.getItem("savedCurrentListOwner"));
+    const [currentUser, setCurrentUser] = useState(!localStorage.getItem("savedCurrentUser") ? "Макс" : localStorage.getItem("savedCurrentUser"));
+    //minmode - вкл/выкл режим минимального списка
 	const [minmode, setMinmode] = useState(!localStorage.getItem("savedMinmode") ? "Full" : localStorage.getItem("savedMinmode"));
 
 	//костыли для кнопки случайного выбора
-	const [listOfTitles, setListOfTitles] = useState([]);
-	const [rndTitle, setRndTitle] = useState({ name: "", pic: "" });
+	const [checkedList, setCheckedList] = useState([]);
+	const [rndTitle, setRndTitle] = useState({id: "", name: "", pic: "" });
 
 	//!react router обновляет весь главный компонент целиком, если идет переход по url
 	//!какими-либо средствами, кроме предусмотренных самим react router, поэтому
@@ -40,14 +45,45 @@ function App(props) {
 
 	//при изменении также сохраняет значение в localstorage
 	useEffect(() => {
-		localStorage.setItem("savedUser", user)
-	}, [user])
+		localStorage.setItem("savedCurrentListOwner", currentListOwner);
+	}, [currentListOwner])
+    useEffect(() => {
+        if (!localStorage.getItem("savedCurrentUser")){
+            alert('Выставлен пользователь по умолчанию. Пожалуйста, идентифицируйте себя, выбрав пользовтеля на панели сверху.')
+        }
+		localStorage.setItem("savedCurrentUser", currentUser);
+	}, [currentUser])
 	useEffect(() => {
 		localStorage.setItem("savedMinmode", minmode);
 	}, [minmode])
-
+    useEffect(() => {
+		let subscriptions = [];
+        //подписываемся на ответ на запрос списка тайтлов для рандомного селекта
+		subscriptions.push(
+			Subjects.RandomTitleSubjectReply.subscribe((list) => {
+                let titles = [...list];
+                if (checkedList.length) titles = titles.filter(title=>!!~checkedList.indexOf(title.id));
+				if (titles.length) setRndTitle(titles[new Random().integer(0, titles.length - 1)]);
+			})
+		);
+        //подписываемя на отметку тайтла для рандомного селекта
+        subscriptions.push(
+			Subjects.TitleSelectSubject.subscribe((title) => {
+                let checked = checkedList;
+                const index = checked.indexOf(title)
+                if (index !== -1)
+                    checked.splice(index,1)
+                else
+                    checked.push(title);
+                setCheckedList([...checked])
+			})
+		);
+		return () => {
+			for (let subscription of subscriptions) subscription.unsubscribe();
+		};
+	// 1eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [checkedList]);
 	return (
-
 		<HelmetProvider>
 			<div className="App">
 				<Helmet>
@@ -76,30 +112,40 @@ function App(props) {
 								setMinmode("Full")
 						}}
 					/>
-					<NavDropdown variant="info" title={user} id="basic-nav-dropdown" style={{ marginRight: "30px" }}>
-						<NavDropdown.Item onSelect={() => setUser("ker264")} >ker264</NavDropdown.Item>
-						<NavDropdown.Item onSelect={() => setUser("LordAsheron")}>LordAsheron</NavDropdown.Item>
-						<NavDropdown.Item onSelect={() => setUser("Tecnika")}>Tecnika</NavDropdown.Item>
-						{/* <NavDropdown.Divider /> */}
-					</NavDropdown>
+					<div className='nav-dropdown-container'>
+                        <div className='nav-dropdown-label' style={{color: 'white'}}>Чей список</div>
+                        <NavDropdown variant="info" title={currentListOwner} id="basic-nav-dropdown">
+                            <NavDropdown.Item onSelect={() => {setCurrentListOwner("ker264"); setCheckedList([])}} >ker264</NavDropdown.Item>
+                            <NavDropdown.Item onSelect={() => {setCurrentListOwner("LordAsheron"); setCheckedList([])}}>LordAsheron</NavDropdown.Item>
+                            <NavDropdown.Item onSelect={() => {setCurrentListOwner("Tecnika"); setCheckedList([])}}>Tecnika</NavDropdown.Item>
+                            {/* <NavDropdown.Divider /> */}
+                        </NavDropdown>
+                    </div>
+                    <div className='nav-dropdown-container'>
+                        <div className='nav-dropdown-label' style={{color: 'white'}}>Пользователь</div>
+                        <NavDropdown variant="info" title={currentUser} id="basic-nav-dropdown">
+                            <NavDropdown.Item onSelect={() => setCurrentUser("Макс")} >Макс</NavDropdown.Item>
+                            <NavDropdown.Item onSelect={() => setCurrentUser("Паша")}>Паша</NavDropdown.Item>
+                            <NavDropdown.Item onSelect={() => setCurrentUser("Ника")}>Ника</NavDropdown.Item>
+                            <NavDropdown.Item onSelect={() => setCurrentUser("Кирилл")}>Кирилл</NavDropdown.Item>
+                        </NavDropdown>
+                    </div>
 				</Navbar>
-
-
 				<FirebaseDatabaseProvider firebase={firebase} {...config}>
 					<div className="main-container d-flex">
 						<div className="main-content">
 							<Switch>
 								<Route path="/list">
-									<ListWrapper minmode={minmode} user={user} setListOfTitles={setListOfTitles}></ListWrapper>
+									<ListWrapper minmode={minmode} currentListOwner={currentListOwner} currentUser={currentUser} checkedList={checkedList}></ListWrapper>
 								</Route>
 								<Route path="/add">
-									<CreateTitle user={user}></CreateTitle>
+									<CreateTitle currentListOwner={currentListOwner}></CreateTitle>
 								</Route>
 								<Route path="/edit">
-									<EditTitle user={user}></EditTitle>
+									<EditTitle currentListOwner={currentListOwner}></EditTitle>
 								</Route>
 								<Route path="/archive">
-									<List minmode={minmode} user={user} path="archive"></List>
+									<List minmode={minmode} currentListOwner={currentListOwner} currentUser={currentUser} path="archive"></List>
 								</Route>
 								<Redirect from="/" to="/list" />
 							</Switch>
@@ -110,10 +156,17 @@ function App(props) {
 									return (
 										<div>
 											<Button variant="outline-success" onClick={() => {
-												setRndTitle(listOfTitles[new Random().integer(0, listOfTitles.length - 1)]);
+                                                Subjects.RandomTitleSubjectRequest.next();
 											}}>Выбрать случайное </Button>
-											<h4 style={{ margin: "auto" }}>{rndTitle.name}</h4>
-											<img style={{marginTop: "10px", maxWidth: "250px", maxHeight: "350px"}} src={rndTitle.pic} alt="" />
+											<div style={{cursor:  rndTitle.id ? 'pointer' : ''}} onClick={()=>{
+                                            rndTitle.id && document.getElementById(rndTitle.id).scrollIntoView({
+                                                behavior: 'smooth',
+                                                block: 'start'
+                                            });
+                                        }}>
+                                                <h4 style={{ margin: "auto" }}>{rndTitle.name}</h4>
+                                                <img style={{marginTop: "10px", maxWidth: "250px", maxHeight: "350px"}} src={rndTitle.pic} alt="" />
+                                            </div>
 
 										</div>
 									);

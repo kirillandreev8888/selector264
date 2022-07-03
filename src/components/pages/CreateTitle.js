@@ -152,7 +152,7 @@ function CreateTitle(props) {
                             </Form.Control>
                         </Form.Group>
                         <Button variant="success" onClick={() => {
-                            firebase.database().ref(props.user + '/' + path).push({
+                            firebase.database().ref(props.currentListOwner + '/' + path).push({
                                 "name": (name !== "") ? name : "Без имени",
                                 "status": status,
                                 "pic": pic,

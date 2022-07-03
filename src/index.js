@@ -7,14 +7,16 @@ import * as serviceWorker from './serviceWorker';
 import logo from './static/logo.svg'
 
 import Favicon from 'react-favicon';
-
+//StrictMode снят из-за warning'а, который возникает из-за необновленного до v2 react-bootstrap
+//TODO обновить react-bootstrap до v2+
 ReactDOM.render(
-  <React.StrictMode>
+//  <React.StrictMode>
     <BrowserRouter>
       <Favicon url={logo} />
       <App />
     </BrowserRouter>
-  </React.StrictMode>,
+//  </React.StrictMode>
+  ,
   document.getElementById('root')
 );
 

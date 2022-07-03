@@ -7,10 +7,10 @@ function ListWrapper(props) {
         <div className="ListWrapper">
             <Tabs defaultActiveKey="mainList" id="uncontrolled-tab-example">
                 <Tab eventKey="mainList" title="Основной лист">
-                    <List minmode={props.minmode} user={props.user} path="titles" status="list" setListOfTitles={props.setListOfTitles}></List>
+                    <List minmode={props.minmode} currentListOwner={props.currentListOwner} currentUser={props.currentUser} path="titles" status="list" checkedList={props.checkedList}></List>
                 </Tab>
                 <Tab eventKey="ongoingList" title="Онгоинги">
-                    <List minmode={props.minmode} user={props.user} path="titles" status="ongoing"></List>
+                    <List minmode={props.minmode} currentListOwner={props.currentListOwner} currentUser={props.currentUser} path="titles" status="ongoing"></List>
                 </Tab>
             </Tabs>
         </div>
