@@ -23,7 +23,7 @@ function CreateTitle(props) {
                 .then(response => response.text())
                 .then(contents => {
                     const root = parse(contents);
-                    setPic(root.querySelector('.c-poster center img').getAttribute("src"));
+                    setPic(root.querySelector('.c-poster img').getAttribute("src"));
                     const newName = root.querySelector('h1').innerHTML.split('<span');
                     setName(newName[0]);
                     const newStat = root.querySelector(".b-anime_status_tag").getAttribute("data-text");
